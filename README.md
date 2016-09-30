@@ -1,4 +1,7 @@
-Benchmarks for various Scala streaming and task libraries
+# Benchmarks
+
+Benchmarks for various Scala streaming and task libraries.  Better
+name wanted.
 
 # Types covered
 
@@ -9,11 +12,15 @@ Benchmarks for various Scala streaming and task libraries
 * scala.concurrent.Future
 * scalaz.concurrent.Task
 
+## Streams
+
+Coming soon.
+
 # Run them yourself
 
 `sbt jmh:run`
 
 # Results
 
-Results are storied in the [results/] directory.  Filenames correspond
-to tags.
+Results are storied in the [results/](results/) directory.  Filenames
+correspond to tags.
