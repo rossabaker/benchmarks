@@ -1,0 +1,19 @@
+Benchmark                           (size)   Mode  Cnt      Score     Error  Units
+FlatMap.fs2Apply                     10000  thrpt   20    191.999 ±  11.755  ops/s
+FlatMap.fs2Delay                     10000  thrpt   20   1797.312 ± 275.710  ops/s
+FlatMap.fs2Now                       10000  thrpt   20   2923.753 ±  41.069  ops/s
+FlatMap.futureApply                  10000  thrpt   20    238.451 ±  14.308  ops/s
+FlatMap.futureSuccessful             10000  thrpt   20    470.229 ±  21.883  ops/s
+FlatMap.futureTrampolineEc           10000  thrpt   20    466.769 ±   9.101  ops/s
+FlatMap.monixApply                   10000  thrpt   20    172.218 ±   4.490  ops/s
+FlatMap.monixDelay                   10000  thrpt   20   4197.885 ±  39.787  ops/s
+FlatMap.monixNow                     10000  thrpt   20   5016.243 ±  76.250  ops/s
+FlatMap.scalazApply                  10000  thrpt   20    231.911 ±   6.725  ops/s
+FlatMap.scalazDelay                  10000  thrpt   20   2099.842 ±  27.721  ops/s
+FlatMap.scalazNow                    10000  thrpt   20   2413.620 ±  85.248  ops/s
+Sum.fs2Chunked                       10000  thrpt   20  10866.631 ± 184.690  ops/s
+Sum.fs2Iterate                       10000  thrpt   20      3.213 ±   0.078  ops/s
+Sum.monixObservableFromIterable      10000  thrpt   20   4741.953 ±  55.338  ops/s
+Sum.monixObservableFromStateAction   10000  thrpt   20   4970.756 ±  91.165  ops/s
+Sum.scalazStreamEmitAll              10000  thrpt   20     62.147 ±   1.192  ops/s
+Sum.scalazStreamIterate              10000  thrpt   20     23.377 ±   0.579  ops/s
