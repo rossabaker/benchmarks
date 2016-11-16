@@ -113,4 +113,13 @@ class FlatMap extends BenchmarkUtils {
       else Future(i)
     Await.result(Future(0).flatMap(loop), Duration.Inf)
   }
+
+  @Benchmark
+  def futureTrampolineEc: Int = {
+    import scala.concurrent._, duration._, ExecutionContext.Implicits.global
+    def loop(i: Int): Future[Int] =
+      if (i < size) Future.successful(i + 1).flatMap(loop)
+      else Future.successful(i)
+    Await.result(Future.successful(0).flatMap(loop), Duration.Inf)
+  }
 }
