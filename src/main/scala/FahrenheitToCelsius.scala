@@ -10,9 +10,6 @@ import org.openjdk.jmh.annotations._
 @Warmup(iterations = 10)
 @Threads(1)
 class FahrenheitToCelsius extends BenchmarkUtils {
-  @Param(Array("10000"))
-  var size: Int = _
-
   def fahrenheitToCelsius(f: Double): Double =
     (f - 32.0) * (5.0/9.0)
 
