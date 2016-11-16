@@ -17,10 +17,12 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "co.fs2" %% "fs2-core" % "0.9.1",
-  "io.monix" %% "monix-reactive" % "2.0.2",
-  "org.scalaz.stream" %% "scalaz-stream" % "0.8.4a"
+  "co.fs2" %% "fs2-core" % "0.9.2",
+  "io.monix" %% "monix-reactive" % "2.1.0",
+  "org.scalaz.stream" %% "scalaz-stream" % "0.8.6a"
 )
+
+resolvers += Resolver.sonatypeRepo("snapshots")
 
 initialCommands := "import com.rossabaker.benchmarks._"
 
