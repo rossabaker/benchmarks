@@ -91,4 +91,20 @@ trait BenchmarkUtils {
       def reportFailure(t: Throwable): Unit = trampolineFailure(t)
     }
   }
+
+  lazy val singleThreadedMonixScheduler: monix.execution.Scheduler =
+    monix.execution.Scheduler(BenchmarkUtils.singleThreadedExecutor)
+}
+
+object BenchmarkUtils {
+  lazy val singleThreadedExecutor =
+    java.util.concurrent.Executors.newSingleThreadScheduledExecutor(DaemonThreadFactory)
+}
+
+object DaemonThreadFactory extends java.util.concurrent.ThreadFactory {
+  def newThread(r: Runnable): Thread = {
+    val t = new Thread(r)
+    t.setDaemon(true)
+    t
+  }
 }
