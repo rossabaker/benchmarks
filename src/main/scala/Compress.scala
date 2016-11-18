@@ -55,6 +55,16 @@ class Compress extends BenchmarkUtils {
   }
 
   @Benchmark
+  def fs2Text() = {
+    import _root_.fs2._, Stream._
+    LoremIpsumStream
+      .through(text.utf8Decode)
+      .through(text.utf8Encode)
+      .run
+      .unsafeRun
+  }
+
+  @Benchmark
   def scalazStreamGzipGunzip(): Unit = {
     import _root_.scalaz.stream._, Process._
     constant(4096)
@@ -86,4 +96,15 @@ class Compress extends BenchmarkUtils {
       .run
       .unsafePerformSync
   }
+
+  @Benchmark
+  def scalazStreamText() = {
+    import _root_.scalaz.stream._, Process._
+    LoremIpsumProcess
+      .pipe(text.utf8Decode)
+      .pipe(text.utf8Encode)
+      .run
+      .unsafePerformSync
+  }
+
 }
