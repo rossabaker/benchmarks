@@ -44,6 +44,26 @@ class WordCount extends BenchmarkUtils {
   }
 
   @Benchmark
+  def monixSequential: Map[String, Int] = {
+    import scala.concurrent._, duration._
+    import monix.reactive.Observable
+    import java.io._
+    Await.result(
+      Observable.fromLinesReader(
+        new BufferedReader(
+          new FileReader("testdata/lorem-ipsum.txt")))
+        .flatMap(line => Observable.fromIterable(
+          line.toLowerCase.split("""\W+""")))
+        .filter(_.nonEmpty)
+        .foldLeftL(Map.empty[String, Int]) { (acc, word) =>
+          acc.updated(word, acc.getOrElse(word, 0) + 1)
+        }
+        .runAsync(singleThreadedMonixScheduler),
+      Duration.Inf
+    )
+  }
+
+  @Benchmark
   def scalazStreamParallel: Map[String, Int] = {
     import scalaz.concurrent.Task
     import scalaz.stream._, Process._
