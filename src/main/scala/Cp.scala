@@ -8,7 +8,7 @@ import org.openjdk.jmh.annotations._
 @Measurement(iterations = 10)
 @Warmup(iterations = 10)
 @Threads(1)
-class Cat extends BenchmarkUtils {
+class Cp extends BenchmarkUtils {
   @Benchmark
   def fs2Sync(): Unit = {
     import _root_.fs2._, Stream._
