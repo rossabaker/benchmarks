@@ -42,4 +42,47 @@ class WordCount extends BenchmarkUtils {
       .unsafePerformSync
       .get
   }
+
+  @Benchmark
+  def scalazStreamParallel: Map[String, Int] = {
+    import scalaz.concurrent.Task
+    import scalaz.stream._, Process._
+    import scalaz.std.anyVal._
+    import scalaz.std.map._
+    import scalaz.syntax.monoid._
+    import java.nio.file.Paths
+
+    // val ChunkBound = 200
+
+    def rechunk[A](in: Process[Task, A]): Process[Task, Seq[A]] = Process suspend {
+      val q = async.unboundedQueue[A] // async.boundedQueue[A](ChunkBound)
+
+      // I was elected to...
+      val feed = in to q.enqueue onComplete Process.eval_(q.close)
+      // not to...
+      val read = q.dequeueAvailable
+
+      feed.drain merge read
+    }
+
+    val lines = constant(4096)
+      .through(nio.file.chunkR("testdata/lorem-ipsum.txt"))
+      .pipe(text.utf8Decode)
+      .pipe(text.lines())
+
+    val maps = rechunk(lines)
+      .map(chunk =>
+        emitAll(chunk)
+          .flatMap(line => emitAll(line.toLowerCase.split("""\W+""")))
+          .filter(_.nonEmpty)
+          .fold(Map.empty[String, Int]) { (acc, word) =>
+            acc.updated(word, acc.getOrElse(word, 0) + 1)
+          })
+
+    merge.mergeN(maps)
+      .fold(Map.empty[String, Int]) { _ |+| _ }
+      .runLast
+      .unsafePerformSync
+      .get
+  }
 }
