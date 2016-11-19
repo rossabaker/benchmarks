@@ -1,3 +1,7 @@
+import github._
+
+lazy val root = project.in(file(".")).dependsOn(fs2Core, fs2IO)
+
 scalaVersion := "2.11.8"
 
 scalacOptions ++= Seq(
@@ -17,7 +21,6 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "co.fs2" %% "fs2-io" % "0.9.2",
   "io.monix" %% "monix-reactive" % "2.1.0",
   "org.scalaz.stream" %% "scalaz-stream" % "0.8.6a"
 )
