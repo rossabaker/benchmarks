@@ -34,8 +34,10 @@ class Text extends BenchmarkUtils {
     emit(LoremIpsum)
       .covary[Task]
       .through(text.lines)
-      .runFold(0)((acc, _) => acc + 1)
+      .fold(0)((acc, _) => acc + 1)
+      .runLast
       .unsafeRun
+      .getOrElse(0)
   }
 
   @Benchmark
@@ -59,7 +61,8 @@ class Text extends BenchmarkUtils {
     emit(LoremIpsum)
       .toSource
       .pipe(text.lines())
-      .runFoldMap(_ => 1)
+      .fold(0)((acc, _) => acc + 1)
+      .runLastOr(0)
       .unsafePerformSync
   }
 }

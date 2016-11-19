@@ -48,4 +48,63 @@ class Cp extends BenchmarkUtils {
       .run
       .unsafePerformSync
   }
+
+  /** https://gist.github.com/alexandru/0e2290a7b5dd8de61ea3ab50e0e08627 */
+  @Benchmark
+  def monixIo(): Unit = {
+    import java.io.{File, FileInputStream, FileOutputStream}
+    import monix.eval.Task
+    import monix.execution.Ack
+    import monix.execution.Ack.{Continue, Stop}
+    import monix.reactive.{Consumer, Observable, Observer}
+    import scala.concurrent._, duration._
+    import scala.util.control.NonFatal
+
+    def copyFile(input: File, destination: File, chunkSize: Int): Task[Unit] =
+      Task.defer {
+        val in = new FileInputStream(input)
+        Observable.fromInputStream(in, chunkSize)
+          .consumeWith(fileConsumer(destination))
+      }
+
+    def fileConsumer(outputFile: File): Consumer[Array[Byte], Unit] =
+      Consumer.create { (scheduler, _, callback) =>
+        new Observer.Sync[Array[Byte]] {
+          private[this] val out = new FileOutputStream(outputFile)
+
+          def onNext(chunk: Array[Byte]): Ack = {
+            try {
+              out.write(chunk)
+              Continue
+            } catch {
+              case NonFatal(ex) =>
+                try out.close() catch { case NonFatal(_) => /* ignore */ }
+                callback.onError(ex)
+                Stop
+            }
+          }
+
+          def onError(ex: Throwable): Unit = {
+            try out.close() catch { case NonFatal(_) => /* ignore */ }
+            callback.onError(ex)
+          }
+
+          def onComplete(): Unit = {
+            try {
+              out.close()
+              callback.onSuccess(())
+            } catch {
+              case NonFatal(ex) =>
+                callback.onError(ex)
+            }
+          }
+        }
+      }
+
+    Await.result(
+      copyFile(new File("testdata/lorem-ipsum.txt"), new File("out/lorem-ipsum.txt"), 4096)
+        .runAsync(monix.execution.Scheduler.global),
+      Duration.Inf
+    )
+  }
 }

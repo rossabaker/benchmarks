@@ -25,6 +25,20 @@ class Sum extends BenchmarkUtils {
   }
 
   @Benchmark
+  def fs2Unfold: Long = {
+    import _root_.fs2._
+    Stream.unfold(0L) { l =>
+      if (l < 10000) Some((l, l + 1L))
+      else None
+    }
+      .sum
+      .covary[Task]
+      .runLast
+      .unsafeRun
+      .get
+  }
+
+  @Benchmark
   def fs2IterateEval: Long = {
     import _root_.fs2._
     Stream.iterateEval(0L)(i => Task.delay(i + 1L))
@@ -105,6 +119,20 @@ class Sum extends BenchmarkUtils {
   def scalazStreamEmitAll: Long = {
     import scalaz.stream._
     Process.emitAll(0L until size)
+      .sum
+      .toSource
+      .runLast
+      .unsafePerformSync
+      .get
+  }
+
+  @Benchmark
+  def scalazStreamUnfold: Long = {
+    import scalaz.stream._
+    Process.unfold(0L) { l =>
+      if (l < 10000) Some((l, l + 1L))
+      else None
+    }
       .sum
       .toSource
       .runLast
