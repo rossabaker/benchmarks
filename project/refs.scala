@@ -10,7 +10,7 @@ trait Fs2Refs {
 }
 
 object github extends Fs2Refs {
-  val repo = Left(uri("git://github.com/functional-streams-for-scala/fs2.git#series/1.0"))
+  val repo = Left(uri("git://github.com/functional-streams-for-scala/fs2.git#01ec76b"))
 }
 
 object local extends Fs2Refs {

@@ -2,7 +2,7 @@ import github._
 
 lazy val root = project.in(file(".")).dependsOn(fs2Core, fs2IO)
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.12.0"
 
 scalacOptions ++= Seq(
   "-deprecation",
@@ -15,13 +15,13 @@ scalacOptions ++= Seq(
   "-unchecked",
   "-Xfatal-warnings",
   "-Xlint",
-  "-Yinline-warnings",
+//  "-Yinline-warnings",
   "-Ywarn-dead-code",
   "-Xfuture"
 )
 
 libraryDependencies ++= Seq(
-  "io.monix" %% "monix-reactive" % "2.1.0",
+  "io.monix" %% "monix-reactive" % "2.1.1",
   "org.scalaz.stream" %% "scalaz-stream" % "0.8.6a"
 )
 
