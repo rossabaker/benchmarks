@@ -69,27 +69,27 @@ class FlatMap extends BenchmarkUtils {
   @Benchmark
   def monixNow: Int = {
     import scala.concurrent._, duration._
-    import monix.eval._, monix.execution.Scheduler.Implicits.global
+    import monix.eval._
     def loop(i: Int): Task[Int] =
       if (i < size) Task.now(i + 1).flatMap(loop)
       else Task.now(i)
-    Await.result(Task.now(0).flatMap(loop).runAsync, Duration.Inf)
+    Task.now(0).flatMap(loop).runSyncMaybe.right.get
   }
 
   @Benchmark
   def monixDelay: Int = {
     import scala.concurrent._, duration._
-    import monix.eval._, monix.execution.Scheduler.Implicits.global
+    import monix.eval._    
     def loop(i: Int): Task[Int] =
-      if (i < size) Task.delay(i + 1).flatMap(loop)
-      else Task.delay(i)
-    Await.result(Task.delay(0).flatMap(loop).runAsync, Duration.Inf)
+      if (i < size) Task.eval(i + 1).flatMap(loop)
+      else Task.eval(i)
+    Task.delay(0).flatMap(loop).runSyncMaybe.right.get
   }
 
   @Benchmark
   def monixApply: Int = {
     import scala.concurrent._, duration._
-    import monix.eval._, monix.execution.Scheduler.Implicits.global
+    import monix.eval._
     def loop(i: Int): Task[Int] =
       if (i < size) Task(i + 1).flatMap(loop)
       else Task(i)

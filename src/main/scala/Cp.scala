@@ -103,7 +103,7 @@ class Cp extends BenchmarkUtils {
 
     Await.result(
       copyFile(new File("testdata/lorem-ipsum.txt"), new File("out/lorem-ipsum.txt"), 4096)
-        .runAsync(monix.execution.Scheduler.global),
+        .runAsync(monixScheduler),
       Duration.Inf
     )
   }
