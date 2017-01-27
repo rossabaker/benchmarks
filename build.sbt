@@ -21,7 +21,7 @@ scalacOptions ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "io.monix" %% "monix-reactive" % "2.2.0-M1",
+  "io.monix" %% "monix-reactive" % "2.2.1",
   "io.monix" %% "monix-forkjoin" % "1.0",
   "org.scalaz.stream" %% "scalaz-stream" % "0.8.6a"
 )
