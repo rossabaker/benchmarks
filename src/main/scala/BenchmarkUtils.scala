@@ -94,6 +94,28 @@ trait BenchmarkUtils {
 
   lazy val singleThreadedMonixScheduler: monix.execution.Scheduler =
     monix.execution.Scheduler(BenchmarkUtils.singleThreadedExecutor)
+
+  // Default scheduler for Monix-related benchmarks
+  implicit lazy val monixScheduler: monix.execution.Scheduler = {
+    import monix.execution.Scheduler
+    import monix.execution.ExecutionModel.SynchronousExecution
+    import monix.forkJoin.ForkJoinExecutionContext
+
+    // Building a Scala 2.11 ForkJoinPool, because the one in
+    // Java 8 / Scala 2.12 has worse performance due to being more fair;
+    // See: https://github.com/monix/monix-forkjoin/
+    val executionContext = 
+      ForkJoinExecutionContext.createStandard(
+        parallelism = Runtime.getRuntime.availableProcessors(),
+        name = "monix-forkjoin",
+        daemonic = true
+      )
+
+    // SynchronousExecution is a recommendation for run-loops to
+    // prefer synchronous execution for as long as possible;
+    // See: https://monix.io/docs/2x/execution/scheduler.html#execution-model    
+    Scheduler(executionContext, SynchronousExecution)
+  }
 }
 
 object BenchmarkUtils {

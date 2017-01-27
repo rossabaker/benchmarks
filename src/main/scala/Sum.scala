@@ -149,7 +149,7 @@ class Sum extends BenchmarkUtils {
       Observable.fromStateAction[Long, Long](l => (l, l + 1L))(0L)
         .take(size)
         .sumL
-        .runAsync(monix.execution.Scheduler.global),
+        .runAsync(monixScheduler),
       Duration.Inf
     )
   }
@@ -158,13 +158,13 @@ class Sum extends BenchmarkUtils {
   def monixObservableFromAsyncStateActionGlobal: Long = {
     import scala.concurrent._, duration._
     import monix.eval._
-    import monix.execution.schedulers._
+    import monix.execution.ExecutionModel
     import monix.reactive.Observable
     Await.result(
       Observable.fromAsyncStateAction[Long, Long](l => Task.delay((l, l + 1L)))(0L)
         .take(size)
         .sumL
-        .runAsync(monix.execution.Scheduler.global.withExecutionModel(ExecutionModel.AlwaysAsyncExecution)),
+        .runAsync(monixScheduler.withExecutionModel(ExecutionModel.AlwaysAsyncExecution)),
       Duration.Inf
     )
   }
@@ -191,7 +191,7 @@ class Sum extends BenchmarkUtils {
     Await.result(
       Observable.fromIterable(0L until size)
         .sumL
-        .runAsync(monix.execution.Scheduler.global),
+        .runAsync(monixScheduler),
       Duration.Inf
     )
   }
